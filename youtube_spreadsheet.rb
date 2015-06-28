@@ -61,7 +61,6 @@ loop do
   end
 
   tasks.each { |task| set ws, task, "Queued" }
-  ws.save
 
   tasks.each do |task|
     puts "Downloading #{task.url}"
