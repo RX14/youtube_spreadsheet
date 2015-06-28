@@ -41,8 +41,9 @@ puts "Loaded Spreadsheet"
 ws = spreadsheet.worksheets[0]
 puts "Loaded Worksheet"
 
+Task = Struct.new("Task", :url, :status_row, :status_col)
+
 loop do
-  Task = Struct.new("Task", :url, :status_row, :status_col)
   tasks = []
   for row in 1..ws.num_rows
     for col in 1..ws.num_cols
