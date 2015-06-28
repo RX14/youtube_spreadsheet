@@ -54,11 +54,11 @@ loop do
     end
   end
 
-  puts "Generated Tasks"
-
   tasks.select! do |task|
     ws[task.status_row, task.status_col] != "Done"
   end
+
+  puts "Downloading #{tasks.count} videos:"
 
   tasks.each { |task| set ws, task, "Queued" }
 
