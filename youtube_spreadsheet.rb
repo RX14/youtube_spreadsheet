@@ -6,24 +6,25 @@ def set(ws, task, text)
   ws[task.status_row, task.status_col] = text
 end
 
-if File.exist? "access_token"
-  access_token = File.read("access_token")
-else
-  client = Google::APIClient.new
-  auth = client.authorization
-  auth.client_id = "209536288277-t42nqjknqj1h80bu5k48q59262ftm7fo.apps.googleusercontent.com"
-  auth.client_secret = "m0fQD_jXZRYbbvEh9kKn8Tz0"
-  auth.scope =
-    "https://www.googleapis.com/auth/drive " +
+client = Google::APIClient.new
+auth = client.authorization
+auth.client_id = "209536288277-t42nqjknqj1h80bu5k48q59262ftm7fo.apps.googleusercontent.com"
+auth.client_secret = "m0fQD_jXZRYbbvEh9kKn8Tz0"
+auth.scope =
+  "https://www.googleapis.com/auth/drive " +
     "https://spreadsheets.google.com/feeds/"
-  auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+if File.exist? "refresh_token"
+  auth.refresh_token = File.read("refresh_token")
+  auth.fetch_access_token!
+else
   print("1. Open this page:\n%s\n\n" % auth.authorization_uri)
   print("2. Enter the authorization code shown in the page: ")
   auth.code = $stdin.gets.chomp
   auth.fetch_access_token!
-  access_token = auth.access_token
-  File.write("access_token", access_token, mode: "w")
+  File.write("refresh_token", auth.refresh_token, mode: "w")
 end
+access_token = auth.access_token
 
 session = GoogleDrive.login_with_oauth(access_token)
 puts "Loaded Session"
